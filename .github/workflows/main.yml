@@ -1,20 +1,30 @@
-name: My First CI
+name: Spring Boot CI
 
 on:
   push:
     branches:
       - main
 
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Display message
-        run: echo "Hello! My CI pipeline is working."
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-      - name: List files
-        run: ls -la
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Run tests
+        run: mvn test
